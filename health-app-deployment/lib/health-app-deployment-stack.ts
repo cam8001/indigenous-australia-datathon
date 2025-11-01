@@ -10,6 +10,12 @@ export class HealthAppDeploymentStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
+    // Check for certificate ARN in context
+    const certificateArn = this.node.tryGetContext('certificateArn');
+    if (!certificateArn) {
+      console.warn('WARNING: No certificateArn found in context. SSL certificate will not be configured.');
+    }
+
     // S3 bucket for hosting the React app
     const websiteBucket = new s3.Bucket(this, 'HealthAppBucket', {
       bucketName: `health-app-${this.account}-${this.region}`,
@@ -31,12 +37,12 @@ export class HealthAppDeploymentStack extends cdk.Stack {
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
       },
-      domainNames: ['ccda.quest'],
-      certificate: certificatemanager.Certificate.fromCertificateArn(
+      domainNames: certificateArn ? ['ccda.quest'] : undefined,
+      certificate: certificateArn ? certificatemanager.Certificate.fromCertificateArn(
         this,
         'HealthAppCertificate',
-        '***REMOVED***'
-      ),
+        certificateArn
+      ) : undefined,
       defaultRootObject: 'index.html',
       errorResponses: [
         {
