@@ -860,23 +860,64 @@ body {
   gap: 1rem;
 }
 
+/* Mobile banner */
+.mobile-banner {
+  display: none;
+}
+
 /* Mobile responsiveness */
 @media (max-width: 768px) {
+  html, body {
+    height: 100% !important;
+    overflow: hidden !important;
+  }
+  
+  #root {
+    height: 100% !important;
+  }
+  
+  .App {
+    height: 100% !important;
+    min-height: 100% !important;
+  }
+  
+  .mobile-banner {
+    display: block !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 7vh !important;
+    background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%) !important;
+    color: white !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    z-index: 1003 !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+  }
+  
   .app-header {
     display: none !important;
   }
   
   .hamburger-menu {
     display: block !important;
+    top: 8vh !important;
   }
   
   .app-main {
     padding: 0 !important;
-    height: 100vh !important;
+    height: 93vh !important;
+    margin-top: 7vh !important;
+    width: 100% !important;
   }
   
   .map-container {
-    height: 100vh !important;
+    height: 100% !important;
+    width: 100% !important;
   }
   
   .map-controls {
@@ -884,7 +925,8 @@ body {
   }
   
   .leaflet-container {
-    height: 100vh !important;
+    height: 100% !important;
+    width: 100% !important;
   }
   
   .map-legend {
@@ -938,33 +980,85 @@ body {
 }
 
 @media (max-width: 480px) {
-  .app-header {
-    padding: 0.75rem;
+  html, body {
+    height: 100% !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
   
-  .app-header h1 {
-    font-size: 1.3rem;
+  #root {
+    height: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  .App {
+    height: 100% !important;
+    min-height: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  .mobile-banner {
+    display: block !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 7vh !important;
+    background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%) !important;
+    color: white !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    z-index: 1003 !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+  }
+  
+  .app-header {
+    display: none !important;
+  }
+  
+  .hamburger-menu {
+    display: block !important;
+    top: 8vh !important;
+  }
+  
+  .app-main {
+    position: fixed !important;
+    top: 7vh !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: 93vh !important;
+  }
+  
+  .map-container {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    height: 100% !important;
+    width: 100% !important;
   }
   
   .leaflet-container {
-    height: 50vh !important;
-    min-height: 250px;
-  }
-  
-  .modal-overlay {
-    padding: 0.25rem;
-  }
-  
-  .modal-header {
-    padding: 0.75rem;
-  }
-  
-  .modal-body {
-    padding: 0.75rem;
-  }
-  
-  .form-section h3 {
-    font-size: 1rem;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    height: 100% !important;
+    width: 100% !important;
   }
 }
 

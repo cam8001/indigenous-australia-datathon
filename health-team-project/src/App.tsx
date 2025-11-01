@@ -80,6 +80,8 @@ function App() {
 
   return (
     <div className="App">
+      <div className="mobile-banner">Community Care Drone Access</div>
+      
       <header className="app-header">
         <h1>First Nations Health Services</h1>
         <p>Far North Queensland Community Health Centre Locator</p>
