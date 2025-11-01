@@ -45,6 +45,7 @@ export class HealthAppDeploymentStack extends cdk.Stack {
           responsePagePath: '/index.html',
         },
       ],
+      comment: 'Health demo app built as part of Indigenous Australian Datathon, November 2025'
     });
 
     // Deploy the built React app to S3
@@ -60,6 +61,12 @@ export class HealthAppDeploymentStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'DistributionUrl', {
       value: `https://${distribution.distributionDomainName}`,
       description: 'Health App URL',
+    });
+
+    // Output the CloudFront Distribution ID for invalidation
+    new cdk.CfnOutput(this, 'DistributionId', {
+      value: distribution.distributionId,
+      description: 'CloudFront Distribution ID',
     });
   }
 }
