@@ -4,7 +4,9 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { firstNationsBoundaries } from '../data/firstNationsBoundaries';
 import { healthServices } from '../data/healthServices';
+import { activeDrones } from '../data/droneData';
 import type { HealthService } from '../data/healthServices';
+import type { Drone } from '../data/droneData';
 
 // Fix for default markers in React-Leaflet
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -17,6 +19,9 @@ L.Icon.Default.mergeOptions({
 interface MapComponentProps {
   onServiceClick: (service: HealthService) => void;
   onTerritoryClick: (territoryId: string) => void;
+  onDroneClick: (drone: Drone) => void;
+  onRequestServices: () => void;
+  onHealthSupplies: () => void;
 }
 
 interface LocationState {
@@ -48,7 +53,7 @@ const LocationMarker: React.FC<{ position: [number, number] | null }> = ({ posit
   ) : null;
 };
 
-const MapComponent: React.FC<MapComponentProps> = ({ onServiceClick, onTerritoryClick }) => {
+const MapComponent: React.FC<MapComponentProps> = ({ onServiceClick, onTerritoryClick, onDroneClick, onRequestServices, onHealthSupplies }) => {
   const [location, setLocation] = useState<LocationState>({
     userLocation: null,
     locationError: null,
@@ -60,6 +65,8 @@ const MapComponent: React.FC<MapComponentProps> = ({ onServiceClick, onTerritory
     isSearching: false,
     searchError: null
   });
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Cairns coordinates as default center
   const cairnsCenter: [number, number] = [-16.9186, 145.7781];
@@ -190,8 +197,79 @@ const MapComponent: React.FC<MapComponentProps> = ({ onServiceClick, onTerritory
     });
   };
 
+  const getDroneIcon = () => {
+    return L.divIcon({
+      html: `<div style="font-size: 24px;">🚁</div>`,
+      className: 'drone-marker',
+      iconSize: [30, 30],
+      iconAnchor: [15, 15]
+    });
+  };
+
   return (
     <div className="map-container">
+      {/* Hamburger menu for mobile */}
+      <div className="hamburger-menu">
+        <button 
+          className="hamburger-btn"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          ☰
+        </button>
+        {isMenuOpen && (
+          <div className="hamburger-content">
+            <div className="search-container">
+              <input
+                type="text"
+                placeholder="Enter address..."
+                value={search.searchQuery}
+                onChange={(e) => setSearch(prev => ({ ...prev, searchQuery: e.target.value }))}
+                onKeyPress={(e) => e.key === 'Enter' && searchAddress()}
+                className="search-input"
+              />
+              <button 
+                onClick={searchAddress}
+                disabled={search.isSearching || !search.searchQuery.trim()}
+                className="search-btn"
+              >
+                {search.isSearching ? '...' : '🔍'}
+              </button>
+            </div>
+            {search.searchError && (
+              <div className="location-error">{search.searchError}</div>
+            )}
+            <button 
+              onClick={requestLocation}
+              disabled={location.isLocating}
+              className="location-btn"
+            >
+              {location.isLocating ? 'Locating...' : 'Find My Location'}
+            </button>
+            {location.locationError && (
+              <div className="location-error">{location.locationError}</div>
+            )}
+            <button 
+              onClick={() => {
+                onRequestServices();
+                setIsMenuOpen(false);
+              }}
+              className="resource-request-btn"
+            >
+              Request Additional Services
+            </button>
+            <button 
+              onClick={() => {
+                onHealthSupplies();
+                setIsMenuOpen(false);
+              }}
+              className="supplies-btn"
+            >
+              Health Supplies
+            </button>
+          </div>
+        )}
+      </div>
+
       <div className="map-controls">
         <div className="search-container">
           <input
@@ -261,6 +339,28 @@ const MapComponent: React.FC<MapComponentProps> = ({ onServiceClick, onTerritory
                 <p><strong>Address:</strong> {service.address}</p>
                 {service.phone && <p><strong>Phone:</strong> {service.phone}</p>}
                 <p><em>Click marker for more details</em></p>
+              </div>
+            </Popup>
+          </Marker>
+        ))}
+
+        {/* Drone markers */}
+        {activeDrones.map((drone) => (
+          <Marker
+            key={drone.id}
+            position={drone.position}
+            icon={getDroneIcon()}
+            eventHandlers={{
+              click: () => onDroneClick(drone)
+            }}
+          >
+            <Popup>
+              <div>
+                <h4>🚀 Drone {drone.id.split('-')[1]}</h4>
+                <p><strong>From:</strong> {drone.from}</p>
+                <p><strong>To:</strong> {drone.to}</p>
+                <p><strong>Status:</strong> {drone.status}</p>
+                <p><em>Click for full details</em></p>
               </div>
             </Popup>
           </Marker>

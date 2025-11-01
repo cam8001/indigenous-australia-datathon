@@ -3,6 +3,7 @@ import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
+import * as certificatemanager from 'aws-cdk-lib/aws-certificatemanager';
 import { Construct } from 'constructs';
 
 export class HealthAppDeploymentStack extends cdk.Stack {
@@ -30,6 +31,12 @@ export class HealthAppDeploymentStack extends cdk.Stack {
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
       },
+      domainNames: ['ccda.quest'],
+      certificate: certificatemanager.Certificate.fromCertificateArn(
+        this,
+        'HealthAppCertificate',
+        '***REMOVED***'
+      ),
       defaultRootObject: 'index.html',
       errorResponses: [
         {
@@ -46,6 +53,7 @@ export class HealthAppDeploymentStack extends cdk.Stack {
       destinationBucket: websiteBucket,
       distribution,
       distributionPaths: ['/*'],
+      prune: true,
     });
 
     // Output the CloudFront URL
