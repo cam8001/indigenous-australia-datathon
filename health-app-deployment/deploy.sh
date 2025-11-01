@@ -1,0 +1,12 @@
+#!/bin/bash
+
+echo "Building React app..."
+cd ../health-team-project
+npm run build
+
+echo "Deploying CDK stack..."
+cd ../health-app-deployment
+npx cdk bootstrap --region ap-southeast-2
+npx cdk deploy --region ap-southeast-2
+
+echo "Deployment complete!"
